@@ -55,7 +55,7 @@ if __name__ == '__main__':
 
 #### 解法1
 
-```java
+```c++
 /**
  * Definition for singly-linked list.
  * struct ListNode {
@@ -103,4 +103,185 @@ public:
     }
 };
 ```
+
+#### 解法2
+
+```c++
+// Source : https://oj.leetcode.com/problems/add-two-numbers/
+// Author : Hao Chen
+// Date   : 2014-06-18
+
+/********************************************************************************** 
+* 
+* You are given two linked lists representing two non-negative numbers. 
+* The digits are stored in reverse order and each of their nodes contain a single digit. 
+* Add the two numbers and return it as a linked list.
+* 
+* Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
+* Output: 7 -> 0 -> 8
+*               
+**********************************************************************************/
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+    
+public:
+    ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
+        int x=0, y=0, carry=0, sum=0;
+        ListNode *h=NULL, **t=&h;
+        
+        while (l1!=NULL || l2!=NULL){
+            x = getValueAndMoveNext(l1);
+            y = getValueAndMoveNext(l2);
+            
+            sum = carry + x + y;
+            
+            ListNode *node = new ListNode(sum%10);
+            *t = node;
+            t = (&node->next);
+            
+            carry = sum/10;
+        }
+        
+        if (carry > 0) {
+            ListNode *node = new ListNode(carry%10);
+            *t = node;
+        }
+        
+        return h;
+    }
+private:
+    int getValueAndMoveNext(ListNode* &l){
+        int x = 0;
+        if (l != NULL){
+            x = l->val;
+            l = l->next;
+        }
+        return x;
+    }
+};
+```
+
+#### 解法3
+
+```c++
+// Time:  O(n)
+// Space: O(1)
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode dummy{0};
+        auto curr = &dummy;
+
+        auto carry = 0;
+        while (l1 || l2 || carry) {
+            auto a = l1? l1->val : 0, b = l2? l2->val : 0;
+            auto val = carry + a + b;
+            curr->next = new ListNode(val % 10);
+            carry = val / 10;
+            l1 = l1 ? l1->next : nullptr;
+            l2 = l2 ? l2->next : nullptr;
+            curr = curr->next;
+        }
+
+        return dummy.next;
+    }
+};
+```
+
+### Java
+
+#### 解法1
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+    // example in leetcode book
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    	ListNode dummyHead = new ListNode(0);
+    	ListNode p = l1, q= l2, curr = dummyHead;
+    	int carry = 0;
+    	while (p != null || q!= null) {
+    		int x = (p != null) ? p.val : 0;
+    		int y = (q != null) ? q.val : 0;
+    		int digit = carry + x + y;
+    		carry = digit / 10;
+    		curr.next = new ListNode(digit % 10);
+    		curr = curr.next;
+    		if (p != null) p = p.next;
+    		if (q != null) q = q.next;
+    	}
+    	if (carry > 0) {
+    		curr.next = new ListNode(carry);
+    	}
+    	return dummyHead.next;
+    }
+}
+```
+
+### C语言
+
+```c
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ */
+struct ListNode *addTwoNumbers(struct ListNode *l1, struct ListNode *l2)
+{
+    int x, y, num, flag = 0;
+    struct ListNode *p = l1, *q = l2;
+    struct ListNode *cur = (struct ListNode *)malloc(sizeof(struct ListNode));
+    cur->next = NULL;
+    struct ListNode *ret = cur;
+    while (p != NULL || q != NULL) {
+        x = (p != NULL) ? p->val : 0;
+        y = (q != NULL) ? q->val : 0;
+        num = x + y + flag;
+        flag = num / 10;
+        cur->next = (struct ListNode *)malloc(sizeof(struct ListNode));
+        cur = cur->next;
+        cur->val = num % 10;
+        cur->next = NULL;
+        if (p != NULL)
+            p = p->next;
+        if (q != NULL)
+            q = q->next;
+    }
+    if (flag > 0) {
+        cur->next = (struct ListNode *)malloc(sizeof(struct ListNode));
+        cur = cur->next;
+        cur->val = 1;
+        cur->next = NULL;
+    }
+    return ret->next;
+}
+```
+
+
 
