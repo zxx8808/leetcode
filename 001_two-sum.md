@@ -85,6 +85,24 @@ if __name__ == '__main__':
     print(s.twoSum([3, 2, 4], 6))
 ```
 
+#### 解法4
+
+```python
+class Solution(object):
+    def twoSum(self, nums, target):
+        """
+        :type nums: List[int]
+        :type target: int
+        :rtype: List[int]
+        """
+        d = {}
+        for i, num in enumerate(nums):
+            if target - num in d:
+                return [d[target - num], i]
+            d[num] = i
+        # no special case handling becasue it's assumed that it has only one solution
+```
+
 ### Java
 
 #### 解法1
