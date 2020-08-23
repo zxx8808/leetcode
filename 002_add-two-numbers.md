@@ -16,193 +16,27 @@
 
 ### Python
 
-```python
-# Definition for singly-linked list.
-class ListNode(object):
-    def __init__(self, x):
-        self.val = x
-        self.next = None
-
-
-class Solution(object):
-    def addTwoNumbers(self, l1, l2):
-        carry = 0
-        # dummy head
-        head = curr = ListNode(0)
-        while l1 or l2:
-            val = carry
-            if l1:
-                val += l1.val
-                l1 = l1.next
-            if l2:
-                val += l2.val
-                l2 = l2.next
-            curr.next = ListNode(val % 10)
-            curr = curr.next
-            carry = val / 10
-        if carry > 0:
-            curr.next = ListNode(carry)
-        return head.next
-
-if __name__ == '__main__':
-    # begin
-    s = Solution()
-    print(s.addTwoNumbers([3,2,4], [5,4,6]))
-
-```
-
-### C++
-
 #### 解法1
 
-```c++
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
 
- /*
-    这道题直接模拟就可以了，只要注意进位和链表长度这两点就行
- */
-
-class Solution {
-public:
-    ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
-        ListNode *p1 = l1,*p2 = l2,*fa;
-        int in = 0;
-        while(p1 && p2) {
-            p1->val += p2->val + in;
-            in = 0;
-            if(p1->val > 9) {
-                p1->val %= 10;
-                in=1;
-            }
-            fa = p1;
-            p1 = p1->next;p2 = p2->next;
-        }
-        if(p2) {
-            fa->next=p2;p1=p2;
-        }
-        while(in) {
-            if(p1 == NULL) {
-                p1= new ListNode(0);
-                fa->next = p1;
-            }
-            p1->val += in;in = 0;
-            if(p1->val > 9) {
-                p1->val%=10;
-                in = 1;
-            }
-            fa = p1;p1 = p1->next;
-        }
-        return l1;
-    }
-};
-```
-
-#### 解法2
-
-```c++
-// Source : https://oj.leetcode.com/problems/add-two-numbers/
-// Author : Hao Chen
-// Date   : 2014-06-18
-
-/********************************************************************************** 
-* 
-* You are given two linked lists representing two non-negative numbers. 
-* The digits are stored in reverse order and each of their nodes contain a single digit. 
-* Add the two numbers and return it as a linked list.
-* 
-* Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
-* Output: 7 -> 0 -> 8
-*               
-**********************************************************************************/
-
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-class Solution {
-    
-public:
-    ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
-        int x=0, y=0, carry=0, sum=0;
-        ListNode *h=NULL, **t=&h;
-        
-        while (l1!=NULL || l2!=NULL){
-            x = getValueAndMoveNext(l1);
-            y = getValueAndMoveNext(l2);
-            
-            sum = carry + x + y;
-            
-            ListNode *node = new ListNode(sum%10);
-            *t = node;
-            t = (&node->next);
-            
-            carry = sum/10;
-        }
-        
-        if (carry > 0) {
-            ListNode *node = new ListNode(carry%10);
-            *t = node;
-        }
-        
-        return h;
-    }
-private:
-    int getValueAndMoveNext(ListNode* &l){
-        int x = 0;
-        if (l != NULL){
-            x = l->val;
-            l = l->next;
-        }
-        return x;
-    }
-};
-```
-
-#### 解法3
-
-```c++
-// Time:  O(n)
-// Space: O(1)
-
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-class Solution {
-public:
-    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        ListNode dummy{0};
-        auto curr = &dummy;
-
-        auto carry = 0;
-        while (l1 || l2 || carry) {
-            auto a = l1? l1->val : 0, b = l2? l2->val : 0;
-            auto val = carry + a + b;
-            curr->next = new ListNode(val % 10);
-            carry = val / 10;
-            l1 = l1 ? l1->next : nullptr;
-            l2 = l2 ? l2->next : nullptr;
-            curr = curr->next;
-        }
-
-        return dummy.next;
-    }
-};
+class Solution:
+    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        dummy = p = ListNode(None)
+        s = 0
+        while l1 or l2 or s:
+            s += (l1.val if l1 else 0) + (l2.val if l2 else 0)
+            p.next = ListNode(s % 10)
+            p = p.next
+            s //= 10
+            l1 = l1.next if l1 else None
+            l2 = l2.next if l2 else None
+        return dummy.next
 ```
 
 ### Java
@@ -218,28 +52,143 @@ public:
  *     ListNode(int x) { val = x; }
  * }
  */
-public class Solution {
-    // example in leetcode book
+
+class Solution {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-    	ListNode dummyHead = new ListNode(0);
-    	ListNode p = l1, q= l2, curr = dummyHead;
-    	int carry = 0;
-    	while (p != null || q!= null) {
-    		int x = (p != null) ? p.val : 0;
-    		int y = (q != null) ? q.val : 0;
-    		int digit = carry + x + y;
-    		carry = digit / 10;
-    		curr.next = new ListNode(digit % 10);
-    		curr = curr.next;
-    		if (p != null) p = p.next;
-    		if (q != null) q = q.next;
-    	}
-    	if (carry > 0) {
-    		curr.next = new ListNode(carry);
-    	}
-    	return dummyHead.next;
+        ListNode dummyHead = new ListNode(0);
+        ListNode p = l1, q = l2, curr = dummyHead;
+        int carry = 0;
+        while (p != null || q != null) {
+            int x = (p != null) ? p.val : 0;
+            int y = (q != null) ? q.val : 0;
+            int sum = carry + x + y;
+            carry = sum / 10;
+            curr.next = new ListNode(sum % 10);
+            curr = curr.next;
+            if (p != null) p = p.next;
+            if (q != null) q = q.next;
+        }
+        if (carry > 0) {
+            curr.next = new ListNode(carry);
+        }
+        return dummyHead.next;
     }
 }
+```
+
+### C++
+
+#### 解法1
+
+**整体思路：**
+将长度较短的链表在末尾补零使得两个连表长度相等，再一个一个元素对其相加（考虑进位）
+
+**具体步骤：**
+获取两个链表所对应的长度
+在较短的链表末尾补零
+对齐相加考虑进位
+
+```c++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *addTwoNumbers(ListNode *l1, ListNode *l2)
+    {
+        int len1 = 1;  //记录l1的长度
+        int len2 = 1;  //记录l2的长度
+        ListNode *p = l1;
+        ListNode *q = l2;
+        while (p->next != NULL)  //获取l1的长度
+        {
+            len1++;
+            p = p->next;
+        }
+        while (q->next != NULL)  //获取l2的长度
+        {
+            len2++;
+            q = q->next;
+        }
+        if (len1 > len2)  // l1较长，在l2末尾补零
+        {
+            for (int i = 1; i <= len1 - len2; i++) {
+                q->next = new ListNode(0);
+                q = q->next;
+            }
+        } else  // l2较长，在l1末尾补零
+        {
+            for (int i = 1; i <= len2 - len1; i++) {
+                p->next = new ListNode(0);
+                p = p->next;
+            }
+        }
+        p = l1;
+        q = l2;
+        bool count = false;               //记录进位
+        ListNode *l3 = new ListNode(-1);  //存放结果的链表
+        ListNode *w = l3;                 // l3的移动指针
+        int i = 0;                        //记录相加结果
+        while (p != NULL && q != NULL) {
+            i = count + p->val + q->val;
+            w->next = new ListNode(i % 10);
+            count = i >= 10 ? true : false;
+            w = w->next;
+            p = p->next;
+            q = q->next;
+        }
+        if (count)  //若最后还有进位
+        {
+            w->next = new ListNode(1);
+            w = w->next;
+        }
+        return l3->next;
+    }
+};
+```
+
+#### 解法2
+
+**整体思路：**
+
+不对齐补零，若链表不为空则用sum(代表每个位的和的结果)加上，考虑进位。
+
+```c++
+class Solution {
+public:
+    ListNode *addTwoNumbers(ListNode *l1, ListNode *l2)
+    {
+        ListNode *head = new ListNode(-1);  //存放结果的链表
+        ListNode *h = head;                 //移动指针
+        int sum = 0;                        //每个位的加和结果
+        bool carry = false;                 //进位标志
+        while (l1 != NULL || l2 != NULL) {
+            sum = 0;
+            if (l1 != NULL) {
+                sum += l1->val;
+                l1 = l1->next;
+            }
+            if (l2 != NULL) {
+                sum += l2->val;
+                l2 = l2->next;
+            }
+            if (carry)
+                sum++;
+            h->next = new ListNode(sum % 10);
+            h = h->next;
+            carry = sum >= 10 ? true : false;
+        }
+        if (carry) {
+            h->next = new ListNode(1);
+        }
+        return head->next;
+    }
+};
 ```
 
 ### C语言
@@ -252,6 +201,7 @@ public class Solution {
  *     struct ListNode *next;
  * };
  */
+
 struct ListNode *addTwoNumbers(struct ListNode *l1, struct ListNode *l2)
 {
     int x, y, num, flag = 0;

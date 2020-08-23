@@ -15,33 +15,34 @@
 
 ### Python
 
+#### 解法1
+
 ```python
 class Solution(object):
-
     def twoSum(self, nums, target):
         """
         :type nums: List[int]
         :type target: int
         :rtype: List[int]
         """
-        #n^2
+        # n^2
         ls = len(nums)
         for i in range(ls):
             for j in range(i + 1, ls):
                 if nums[i] + nums[j] == target:
                     return [i, j]
 
-    def twoSum(self, nums, target):
-        # hash 2
-        hash_nums = {}
-        for index, num in enumerate(nums):
-            another = target - num
-            try:
-                hash_nums[another]
-                return [hash_nums[another], index]
-            except KeyError:
-                hash_nums[num] = index
 
+if __name__ == '__main__':
+    # begin
+    s = Solution()
+    print(s.twoSum([3, 2, 4], 6))
+```
+
+#### 解法2
+
+```python
+class Solution(object):
     def twoSum(self, nums, target):
         mapping = {}
 
@@ -52,25 +53,160 @@ class Solution(object):
             else:
                 mapping[val] = index
 
-    def twoSum(self, nums, target):
-       # two point
-       nums_index = [(v, index) for index, v in enumerate(nums)]
-       nums_index.sort()
-       begin, end = 0, len(nums) - 1
-       while begin < end:
-           curr = nums_index[begin][0] + nums_index[end][0]
-           if curr == target:
-               return [nums_index[begin][1], nums_index[end][1]]
-           elif curr < target:
-               begin += 1
-           else:
-               end -= 1
 
 if __name__ == '__main__':
     # begin
     s = Solution()
     print(s.twoSum([3, 2, 4], 6))
+```
 
+#### 解法3
+
+```python
+class Solution(object):
+    def twoSum(self, nums, target):
+        # two point
+        nums_index = [(v, index) for index, v in enumerate(nums)]
+        nums_index.sort() // 这里实际上是字典比较大小吧？
+        begin, end = 0, len(nums) - 1
+        while begin < end:
+            curr = nums_index[begin][0] + nums_index[end][0]
+            if curr == target:
+                return [nums_index[begin][1], nums_index[end][1]]
+            elif curr < target:
+                begin += 1
+            else:
+                end -= 1
+
+
+if __name__ == '__main__':
+    # begin
+    s = Solution()
+    print(s.twoSum([3, 2, 4], 6))
+```
+
+### Java
+
+#### 解法1
+
+```java
+import java.util.HashMap;
+
+/// Brute Force
+/// Time Complexity: O(n^2)
+/// Space Complexity: O(1)
+public class Solution1 {
+
+    public int[] twoSum(int[] nums, int target) {
+
+        for (int i = 0; i < nums.length; i++)
+            for (int j = i + 1; j < nums.length; j++)
+                if (nums[i] + nums[j] == target) {
+                    int[] res = { i, j };
+                    return res;
+                }
+
+        throw new IllegalStateException("the input has no solution");
+    }
+
+    private static void printArr(int[] nums) {
+        for (int num : nums)
+            System.out.print(num + " ");
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+
+        int[] nums = { 0, 4, 3, 0 };
+        int target = 0;
+        printArr((new Solution1()).twoSum(nums, target));
+    }
+}
+```
+
+#### 解法2
+
+```java
+import java.util.HashMap;
+
+/// Two-Pass Hash Table
+/// Time Complexity: O(n)
+/// Space Complexity: O(n)
+public class Solution2 {
+
+    public int[] twoSum(int[] nums, int target) {
+
+        HashMap<Integer, Integer> record = new HashMap<Integer, Integer>();
+        for (int i = 0; i < nums.length; i++)
+            record.put(nums[i], i);
+
+        for (int i = 0; i < nums.length; i++) {
+            Integer index = record.get(target - nums[i]);
+            if (index != null && index != i) {
+                int[] res = { i, index };
+                return res;
+            }
+
+            record.put(nums[i], i);
+        }
+
+        throw new IllegalStateException("the input has no solution");
+    }
+
+    private static void printArr(int[] nums) {
+        for (int num : nums)
+            System.out.print(num + " ");
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+
+        int[] nums = { 0, 4, 3, 0 };
+        int target = 7;
+        printArr((new Solution2()).twoSum(nums, target));
+    }
+}
+```
+
+#### 解法3
+
+```java
+import java.util.HashMap;
+
+/// One-Pass Hash Table
+/// Time Complexity: O(n)
+/// Space Complexity: O(n)
+public class Solution3 {
+
+    public int[] twoSum(int[] nums, int target) {
+
+        HashMap<Integer, Integer> record = new HashMap<Integer, Integer>();
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+            if (record.containsKey(complement)) {
+                int[] res = { i, record.get(complement) };
+                return res;
+            }
+
+            record.put(nums[i], i);
+        }
+
+        throw new IllegalStateException("the input has no solution");
+    }
+
+    private static void printArr(int[] nums) {
+        for (int num : nums)
+            System.out.print(num + " ");
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+
+        int[] nums = { 0, 4, 3, 0 };
+        int target = 0;
+        printArr((new Solution3()).twoSum(nums, target));
+    }
+}
 ```
 
 ### C++
@@ -78,13 +214,9 @@ if __name__ == '__main__':
 #### 解法1
 
 ```c++
-/// Source : https://leetcode.com/problems/two-sum/description/
-/// Author : liuyubobobo
-/// Time   : 2017-11-15
-
 #include <iostream>
-#include <vector>
 #include <stdexcept>
+#include <vector>
 
 using namespace std;
 
@@ -127,10 +259,6 @@ int main()
 #### 解法2
 
 ```c++
-/// Source : https://leetcode.com/problems/two-sum/description/
-/// Author : liuyubobobo
-/// Time   : 2017-11-15
-
 #include <iostream>
 #include <vector>
 #include <cassert>
@@ -182,10 +310,6 @@ int main() {
 #### 解法3
 
 ```c++
-/// Source : https://leetcode.com/problems/two-sum/description/
-/// Author : liuyubobobo
-/// Time   : 2017-11-15
-
 #include <iostream>
 #include <vector>
 #include <cassert>
@@ -234,144 +358,6 @@ int main() {
 }
 ```
 
-### Java
-
-#### 解法1
-
-```java
-/// Source : https://leetcode.com/problems/two-sum/description/
-/// Author : liuyubobobo
-/// Time   : 2017-11-15
-
-import java.util.HashMap;
-
-/// Brute Force
-/// Time Complexity: O(n^2)
-/// Space Complexity: O(1)
-public class Solution1 {
-
-    public int[] twoSum(int[] nums, int target) {
-
-        for (int i = 0; i < nums.length; i++)
-            for (int j = 0; j < nums.length; j++)
-                if (nums[i] + nums[j] == target) {
-                    int[] res = { i, j };
-                    return res;
-                }
-
-        throw new IllegalStateException("the input has no solution");
-    }
-
-    private static void printArr(int[] nums) {
-        for (int num : nums)
-            System.out.print(num + " ");
-        System.out.println();
-    }
-
-    public static void main(String[] args) {
-
-        int[] nums = { 0, 4, 3, 0 };
-        int target = 0;
-        printArr((new Solution1()).twoSum(nums, target));
-    }
-}
-```
-
-#### 解法2
-
-```java
-/// Source : https://leetcode.com/problems/two-sum/description/
-/// Author : liuyubobobo
-/// Time   : 2017-11-15
-
-import java.util.HashMap;
-
-/// Two-Pass Hash Table
-/// Time Complexity: O(n)
-/// Space Complexity: O(n)
-public class Solution2 {
-
-    public int[] twoSum(int[] nums, int target) {
-
-        HashMap<Integer, Integer> record = new HashMap<Integer, Integer>();
-        for(int i = 0 ; i < nums.length ; i ++)
-            record.put(nums[i], i);
-
-        for(int i = 0 ; i < nums.length; i ++){
-
-            Integer index = record.get(target - nums[i]);
-            if(index != null && index != i){
-                int[] res = {i, index};
-                return res;
-            }
-
-            record.put(nums[i], i);
-        }
-
-        throw new IllegalStateException("the input has no solution");
-    }
-
-    private static void printArr(int[] nums){
-        for(int num: nums)
-            System.out.print(num + " ");
-        System.out.println();
-    }
-
-    public static void main(String[] args) {
-
-        int[] nums = {0, 4, 3, 0};
-        int target = 7;
-        printArr((new Solution2()).twoSum(nums, target));
-    }
-}
-```
-
-#### 解法3
-
-```java
-/// Source : https://leetcode.com/problems/two-sum/description/
-/// Author : liuyubobobo
-/// Time   : 2017-11-15
-
-import java.util.HashMap;
-
-/// One-Pass Hash Table
-/// Time Complexity: O(n)
-/// Space Complexity: O(n)
-public class Solution3 {
-
-    public int[] twoSum(int[] nums, int target) {
-
-        HashMap<Integer, Integer> record = new HashMap<Integer, Integer>();
-        for(int i = 0 ; i < nums.length; i ++){
-
-            int complement = target - nums[i];
-            if(record.containsKey(complement)){
-                int[] res = {i, record.get(complement)};
-                return res;
-            }
-
-            record.put(nums[i], i);
-        }
-
-        throw new IllegalStateException("the input has no solution");
-    }
-
-    private static void printArr(int[] nums){
-        for(int num: nums)
-            System.out.print(num + " ");
-        System.out.println();
-    }
-
-    public static void main(String[] args) {
-
-        int[] nums = {0, 4, 3, 0};
-        int target = 0;
-        printArr((new Solution3()).twoSum(nums, target));
-    }
-}
-```
-
 ### C语言
 
 ```C
@@ -379,8 +365,7 @@ public class Solution3 {
 #include <stdlib.h>
 #include <stdbool.h>
 
-struct object
-{
+struct object {
     int val;
     int index;
 };
@@ -390,10 +375,11 @@ static int compare(const void *a, const void *b)
     return ((struct object *)a)->val - ((struct object *)b)->val;
 }
 
-int* twoSum(int* nums, int numsSize, int target, int* returnSize){
+int *twoSum(int *nums, int numsSize, int target, int *returnSize)
+{
     int i, j;
     struct object *objs = malloc(numsSize * sizeof(*objs));
-    int* res = (int *) malloc(2 * sizeof(int));
+    int *res = (int *)malloc(2 * sizeof(int));
     for (i = 0; i < numsSize; i++) {
         objs[i].val = nums[i];
         objs[i].index = i;
@@ -405,9 +391,11 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize){
     while (i < j) {
         int diff = target - objs[i].val;
         if (diff > objs[j].val) {
-            while (++i < j && objs[i].val == objs[i - 1].val);
+            while (++i < j && objs[i].val == objs[i - 1].val)
+                ;
         } else if (diff < objs[j].val) {
-            while (--j > i && objs[j].val == objs[j + 1].val);
+            while (--j > i && objs[j].val == objs[j + 1].val)
+                ;
         } else {
             res[0] = objs[i].index;
             res[1] = objs[j].index;
@@ -421,7 +409,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize){
 
 int main(void)
 {
-    int nums[] = {-1, -2, -3, -4, -5};
+    int nums[] = { -1, -2, -3, -4, -5 };
     int target = -8;
     int count = sizeof(nums) / sizeof(*nums);
     int *results = NULL;
@@ -430,7 +418,7 @@ int main(void)
     results = twoSum(nums, count, target, &returnSize);
     if (results && returnSize == 2) {
         printf("%d %d\n", results[0], results[1]);
-    } else{
+    } else {
         printf("Not found\n");
     }
     system("pause");
